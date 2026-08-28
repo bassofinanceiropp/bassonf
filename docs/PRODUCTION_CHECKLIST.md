@@ -1,0 +1,26 @@
+# Checklist de produção
+
+- [ ] Criar Supabase exclusivo do Basso Fiscal.
+- [ ] Executar `sql/001_schema.sql` somente nesse Supabase.
+- [ ] Criar credenciais administrativas fortes.
+- [ ] Configurar `APP_SESSION_SECRET`, `WORKER_SECRET` e `CRON_SECRET` diferentes.
+- [ ] Criar endpoint read-only de pedidos no sistema principal da Basso.
+- [ ] Configurar `BASSO_ORDERS_API_URL` e `BASSO_ORDERS_API_KEY`.
+- [ ] Cadastrar produtos e perfis fiscais com dados fornecidos pelo contador.
+- [ ] Criar conta/empresa na Focus NFe.
+- [ ] Configurar token da Focus em HOMOLOGAÇÃO.
+- [ ] Confirmar CNPJ, IE, CRT e demais dados da empresa.
+- [ ] Confirmar CSC/certificado/configurações exigidas para NFC-e.
+- [ ] Testar 1 pedido PIX.
+- [ ] Testar dinheiro, débito e crédito.
+- [ ] Testar desconto/cupom.
+- [ ] Testar taxa de entrega.
+- [ ] Testar pizza meio a meio/adicionais com o normalizador aprovado pela contabilidade.
+- [ ] Testar rejeição por produto incompleto.
+- [ ] Testar retry de falha técnica.
+- [ ] Testar proteção contra clique duplo/duplicidade.
+- [ ] Testar cancelamento dentro das regras aplicáveis.
+- [ ] Conferir XML e DANFC-e com o contador.
+- [ ] Gerar ZIP contábil e conferir relatório.
+- [ ] Trocar `DEMO_MODE=false` somente após todos os testes.
+- [ ] Trocar `FOCUS_NFE_ENV=producao` somente após homologação.
