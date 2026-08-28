@@ -52,6 +52,30 @@ export interface ProductFiscalProfile {
   icmsRate?: number | null;
 }
 
+export interface FiscalProductRow extends ProductFiscalProfile {
+  id?: string;
+  externalProductId?: string | null;
+  profileId?: string | null;
+  profileName?: string | null;
+  active?: boolean;
+  complete?: boolean;
+}
+
+export interface FiscalProfileRow {
+  id: string;
+  name: string;
+  ncm?: string | null;
+  cest?: string | null;
+  cfop?: string | null;
+  cstCsosn?: string | null;
+  origin?: string | null;
+  unit?: string | null;
+  pisCode?: string | null;
+  cofinsCode?: string | null;
+  icmsRate?: number | null;
+  active: boolean;
+}
+
 export interface FiscalDocument {
   id: string;
   orderId: string;
@@ -72,9 +96,42 @@ export interface FiscalDocument {
   errorMessage?: string | null;
 }
 
+export type ValidationSeverity = "error" | "warning";
 export interface ValidationIssue {
   orderId: string;
   orderNumber: string;
   code: string;
   message: string;
+  severity?: ValidationSeverity;
+  sku?: string;
+  productName?: string;
+}
+
+export interface CompanyFiscalSettings {
+  id?: string;
+  companySlug: string;
+  companyName: string;
+  companyDocument: string;
+  companyIe: string;
+  companyCrt: string;
+  companyUf: string;
+  addressStreet?: string;
+  addressNumber?: string;
+  addressComplement?: string;
+  addressDistrict?: string;
+  addressCity?: string;
+  addressCityCode?: string;
+  addressZip?: string;
+  environment: "homologacao" | "producao";
+  documentType: "nfce";
+  series?: string;
+  active: boolean;
+}
+
+export interface IntegrationHealthItem {
+  key: "database" | "storage" | "orders" | "focus";
+  label: string;
+  status: "online" | "configured" | "warning" | "offline" | "demo";
+  detail: string;
+  checkedAt: string;
 }

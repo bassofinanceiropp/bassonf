@@ -1,21 +1,27 @@
 import crypto from "crypto";
 import { cookies } from "next/headers";
-import { env } from "@/lib/env";
+import { authConfigurationIssues, env } from "@/lib/env";
 
 const COOKIE = "basso_fiscal_session";
 
+function sessionSecret() {
+  const issues = authConfigurationIssues();
+  if (issues.some((issue) => issue.startsWith("APP_SESSION_SECRET"))) throw new Error("AUTH_NOT_CONFIGURED");
+  return env.sessionSecret;
+}
+
 function sign(value: string) {
-  return crypto.createHmac("sha256", env.sessionSecret).update(value).digest("hex");
+  return crypto.createHmac("sha256", sessionSecret()).update(value).digest("hex");
 }
 
 export function makeSession(email: string) {
   const expires = Date.now() + 1000 * 60 * 60 * 12;
-  const payload = Buffer.from(JSON.stringify({ email, expires })).toString("base64url");
+  const payload = Buffer.from(JSON.stringify({ email, role: "admin", expires })).toString("base64url");
   return `${payload}.${sign(payload)}`;
 }
 
 export function verifySession(token?: string | null) {
-  if (!token) return null;
+  if (!token || !env.sessionSecret) return null;
   const [payload, signature] = token.split(".");
   if (!payload || !signature) return null;
   const expected = sign(payload);
@@ -24,7 +30,7 @@ export function verifySession(token?: string | null) {
   try {
     const parsed = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
     if (!parsed.email || !parsed.expires || parsed.expires < Date.now()) return null;
-    return parsed as { email: string; expires: number };
+    return parsed as { email: string; role: "admin"; expires: number };
   } catch {
     return null;
   }

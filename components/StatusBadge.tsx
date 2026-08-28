@@ -1,15 +1,16 @@
 import type { FiscalStatus } from "@/lib/types";
 
-const labels: Record<FiscalStatus, [string, string]> = {
-  not_issued: ["Não emitido", "gray"],
-  queued: ["Na fila", "orange"],
-  processing: ["Processando", "orange"],
-  authorized: ["Autorizada", "green"],
-  rejected: ["Rejeitada", "red"],
-  technical_failure: ["Falha técnica", "red"],
-  cancelled: ["Cancelada", "gray"],
+const labels: Record<FiscalStatus, string> = {
+  not_issued: "Não emitido",
+  queued: "Na fila",
+  processing: "Processando",
+  authorized: "Autorizada",
+  rejected: "Rejeitada",
+  technical_failure: "Falha técnica",
+  cancelled: "Cancelada",
 };
-export function StatusBadge({ status }: { status: FiscalStatus }) {
-  const [label, color] = labels[status] || [status, "gray"];
-  return <span className={`badge ${color}`}>{label}</span>;
+
+export function StatusBadge({ status }: { status: FiscalStatus | string }) {
+  const cls = status === "authorized" ? "green" : status === "rejected" || status === "technical_failure" ? "red" : status === "queued" || status === "processing" ? "orange" : "gray";
+  return <span className={`badge ${cls}`}><span className="badge-dot" />{labels[status as FiscalStatus] || status}</span>;
 }

@@ -31,3 +31,26 @@ export function asDateInput(value = new Date()) {
 export function safeReference(input: string) {
   return input.toLowerCase().replace(/[^a-z0-9-_]/g, "-").slice(0, 80);
 }
+
+export function digits(value?: string | null) {
+  return (value || "").replace(/\D/g, "");
+}
+
+export function clamp(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, value));
+}
+
+export function monthRange(date = new Date()) {
+  const today = asDateInput(date);
+  return { start: `${today.slice(0, 7)}-01`, end: today };
+}
+
+export function previousMonthRange(date = new Date()) {
+  const now = new Date(date);
+  now.setUTCDate(1);
+  now.setUTCMonth(now.getUTCMonth() - 1);
+  const year = now.getUTCFullYear();
+  const month = String(now.getUTCMonth() + 1).padStart(2, "0");
+  const last = new Date(Date.UTC(year, now.getUTCMonth() + 1, 0)).getUTCDate();
+  return { start: `${year}-${month}-01`, end: `${year}-${month}-${String(last).padStart(2, "0")}` };
+}

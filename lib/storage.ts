@@ -1,8 +1,9 @@
 import { env } from "@/lib/env";
 import { adminSupabase } from "@/lib/repo/supabase";
 import { downloadFocusArtifact } from "@/lib/focus/provider";
+import type { CompanyFiscalSettings } from "@/lib/types";
 
-export async function archiveFocusArtifacts(documentId: string, orderId: string, response: any) {
+export async function archiveFocusArtifacts(documentId: string, orderId: string, response: any, settings?: CompanyFiscalSettings) {
   if (env.demoMode) return { xmlPath: null, pdfPath: null };
   const db = adminSupabase();
   const date = new Date();
@@ -13,7 +14,7 @@ export async function archiveFocusArtifacts(documentId: string, orderId: string,
 
   const xmlRemote = response?.caminho_xml_nota_fiscal || response?.url_xml;
   if (xmlRemote) {
-    const bytes = await downloadFocusArtifact(xmlRemote);
+    const bytes = await downloadFocusArtifact(xmlRemote, settings);
     xmlPath = `${env.companySlug}/${yyyy}/${mm}/xml/${orderId}.xml`;
     const { error } = await db.storage.from(env.storageBucket).upload(xmlPath, bytes, { contentType: "application/xml", upsert: true });
     if (error) throw error;
@@ -21,7 +22,7 @@ export async function archiveFocusArtifacts(documentId: string, orderId: string,
 
   const pdfRemote = response?.caminho_danfe || response?.url_danfe;
   if (pdfRemote) {
-    const bytes = await downloadFocusArtifact(pdfRemote);
+    const bytes = await downloadFocusArtifact(pdfRemote, settings);
     pdfPath = `${env.companySlug}/${yyyy}/${mm}/pdf/${orderId}.pdf`;
     const { error } = await db.storage.from(env.storageBucket).upload(pdfPath, bytes, { contentType: "application/pdf", upsert: true });
     if (error) throw error;

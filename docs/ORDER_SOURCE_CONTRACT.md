@@ -4,7 +4,7 @@ O projeto Fiscal é separado do sistema Basso. Em produção, o recomendado é e
 
 ## Request
 
-`GET BASSO_ORDERS_API_URL?start=2026-08-01&end=2026-08-01&payment=pix&source=cardapio&fiscalStatus=not_issued&q=1051`
+`GET BASSO_ORDERS_API_URL?start=2026-08-01&end=2026-08-01&payment=pix&source=cardapio&q=1051`
 
 Header:
 
@@ -30,7 +30,6 @@ Header:
       "discount": 0,
       "deliveryFee": 0,
       "status": "completed",
-      "fiscalStatus": "not_issued",
       "items": [
         {
           "id": "item-1",
@@ -52,7 +51,8 @@ Header:
 - `source`: `cardapio`, `pdv`, `mesa`, `ifood`, `99food`, `other`
 - `status`: `paid`, `completed`, `cancelled`
 - `fulfillment` (opcional): `delivery`, `pickup`, `dine_in`
-- `fiscalStatus`: `not_issued`, `queued`, `processing`, `authorized`, `rejected`, `technical_failure`, `cancelled`
+
+> O endpoint operacional **não precisa conhecer o status fiscal**. O Basso Fiscal sobrepõe `not_issued/queued/authorized/...` usando o banco fiscal separado. Se o campo `fiscalStatus` vier na resposta ele é aceito, mas é opcional.
 
 ## Segurança
 
