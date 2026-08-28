@@ -63,10 +63,10 @@ export function EmissionClient({ initialStart, initialEnd }: { initialStart: str
         let processedTotal=0;
         for(let i=0;i<60;i++){
           setMessage(`Lote ${data.batch.id} criado. Processando emissões... ${processedTotal}/${payloadOrders.length}`);
-          const workerRes=await fetch("/api/internal/fiscal-worker",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({batchId:data.batch.id})});
-          const workerData=await workerRes.json();
-          if(!workerRes.ok) throw new Error(workerData.error||"Falha ao processar fila fiscal");
-          const processed=Number(workerData.processed||0);
+          const processadorRes=await fetch("/api/fiscal/process-queue",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({batchId:data.batch.id})});
+          const processadorData=await processadorRes.json();
+          if(!processadorRes.ok) throw new Error(processadorData.error||"Falha ao processar fila fiscal");
+          const processed=Number(processadorData.processed||0);
           processedTotal+=processed;
           if(processed===0) break;
         }

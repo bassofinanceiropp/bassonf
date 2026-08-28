@@ -8,7 +8,7 @@ A integração fica isolada em `lib/focus/provider.ts`.
 2. `FOCUS_NFE_TOKEN` existe somente no ambiente do servidor.
 3. Cada pedido usa referência determinística no formato `la-forneria-basso-order-<id>`.
 4. O banco possui proteção contra documento ativo duplicado por pedido.
-5. O worker processa no máximo 20 itens por execução e reenvia falhas técnicas até 3 tentativas.
+5. O processador executa no máximo 20 itens por execução e reenvia falhas técnicas até 3 tentativas.
 6. Rejeição fiscal não entra em loop automático.
 7. XML/PDF autorizados são copiados para storage privado quando o provedor disponibiliza artefatos.
 

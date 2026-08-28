@@ -135,7 +135,7 @@ export async function recoverStaleBatchItems(minutes = 10) {
   const db = adminSupabase();
   const threshold = new Date(Date.now() - minutes * 60_000).toISOString();
   const { data, error } = await db.from("fiscal_batch_items")
-    .update({ status: "queued", started_at: null, error_message: "Recuperado após worker interrompido." })
+    .update({ status: "queued", started_at: null, error_message: "Recuperado após processamento interrompido." })
     .eq("status", "processing")
     .lt("started_at", threshold)
     .select("id");

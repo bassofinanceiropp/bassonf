@@ -17,8 +17,8 @@ import {
   recoverStaleBatchItems,
 } from "@/lib/repo/fiscal";
 
-async function runWorker(batchId?: string) {
-  if (env.demoMode) return { demo: true, processed: 0, message: "Worker desabilitado no modo demonstração." };
+async function processQueue(batchId?: string) {
+  if (env.demoMode) return { demo: true, processed: 0, message: "Processamento desabilitado no modo demonstração." };
   const profiles = await getProfiles();
   await recoverStaleBatchItems(10);
   const items = await getQueuedBatchItems(10, batchId);
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
     await requireSession();
     const body = await request.json().catch(() => ({}));
     const batchId = typeof body?.batchId === "string" && body.batchId ? body.batchId : undefined;
-    return NextResponse.json(await runWorker(batchId));
+    return NextResponse.json(await processQueue(batchId));
   } catch (error: any) {
     const unauthorized = error?.message === "UNAUTHORIZED";
     return NextResponse.json({ error: unauthorized ? "Não autorizado" : (error?.message || "Falha ao processar fila fiscal") }, { status: unauthorized ? 401 : 500 });

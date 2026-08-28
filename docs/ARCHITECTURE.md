@@ -31,9 +31,9 @@ Concentra banco, lotes, snapshots e documentos.
 
 Concentra autenticação, payload, emissão, cancelamento e download de artefatos.
 
-### Worker
+### Processamento da fila
 
-`app/api/internal/fiscal-worker/route.ts`
+`app/api/fiscal/process-queue/route.ts`
 
 Consome itens `queued`, faz claim atômico, emite, arquiva arquivos e atualiza o lote.
 

@@ -13,7 +13,7 @@ export function ProcessQueueButton({ batchId, compact = false }: { batchId: stri
     try {
       let total = 0;
       for (let i = 0; i < 60; i++) {
-        const res = await fetch("/api/internal/fiscal-worker", {
+        const res = await fetch("/api/fiscal/process-queue", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ batchId }),

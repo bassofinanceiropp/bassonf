@@ -31,7 +31,7 @@ export default async function DashboardPage() {
           <div className="kpi-line"><span className="muted">Autorizadas</span><strong>{authorized.length}</strong></div>
           <div className="kpi-line"><span className="muted">Rejeitadas</span><strong>{rejected.length}</strong></div>
           <div className="kpi-line"><span className="muted">Sem emissão</span><strong>{pending.length}</strong></div>
-          <div className="notice">O painel operacional da Basso continua independente. Este projeto apenas consulta/sincroniza pedidos e executa operações fiscais.</div>
+          <div className="notice">O painel operacional da Basso continua independente. Este projeto apenas consulta/sinagendamentoiza pedidos e executa operações fiscais.</div>
         </div>
       </div>
     </div>

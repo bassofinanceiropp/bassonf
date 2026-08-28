@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     const batch=await createBatch(orders,session.email);
 
     // Em DEMO processamos imediatamente apenas para a interface ser testável.
-    // Em produção, a função SQL/worker descrita no README deve consumir fiscal_batch_items
+    // Em produção, a função SQL/processador descrita no README deve consumir fiscal_batch_items
     // em pequenos grupos. Isto evita timeout da Vercel e mantém o lote recuperável.
     const results=[] as any[];
     if(env.demoMode){

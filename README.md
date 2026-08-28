@@ -13,7 +13,7 @@ Projeto independente para emissão e gestão de NFC-e da La Forneria Basso usand
 - pré-validação de produtos/totais;
 - proteção contra emissão duplicada;
 - criação de lotes persistentes;
-- worker de emissão em pequenos grupos;
+- processador de emissão em pequenos grupos;
 - adapter isolado para Focus NFe;
 - homologação/produção por variáveis de ambiente;
 - tratamento separado de rejeição fiscal e falha técnica;
@@ -151,26 +151,26 @@ Veja `docs/FOCUS_INTEGRATION.md`.
    - NCM/CFOP/CST/CSOSN;
    - emissão ativa/duplicada.
 7. O lote é criado.
-8. Em produção, o worker processa os itens.
+8. Em produção, o processador executa os itens.
 9. Autorizadas, rejeitadas e falhas ficam registradas individualmente.
 
 A data usada no filtro é a **data do pedido**. O sistema não falsifica data anterior de autorização fiscal.
 
 ## Processamento da fila no Vercel Hobby
 
-Este projeto não usa Vercel Cron e não precisa de `CRON_SECRET` ou `WORKER_SECRET`.
+Este projeto não usa agendamento automático da Vercel. O processamento é iniciado somente pela interface autenticada.
 
 Quando um lote é criado pela tela **Emitir NFC-e**, o navegador autenticado chama:
 
 ```text
-POST /api/internal/fiscal-worker
+POST /api/fiscal/process-queue
 ```
 
 A rota exige a sessão administrativa e processa até 10 itens por chamada. A interface repete chamadas curtas até esvaziar o lote, evitando uma única função longa.
 
 Se a aba for fechada durante o processamento, o lote permanece salvo. Acesse **Lotes de emissão** e use **Processar pendentes** para continuar.
 
-Isso mantém o módulo compatível com o Vercel Hobby sem agendador automático.
+Isso mantém o módulo compatível com o Vercel Hobby sem tarefas agendadas.
 
 ## Falhas e retentativas
 
@@ -181,7 +181,7 @@ Isso mantém o módulo compatível com o Vercel Hobby sem agendador automático.
 
 ## XML e PDF
 
-Quando a Focus retorna caminhos para XML/DANFC-e, o worker tenta copiar os arquivos para o bucket privado `fiscal-documents`.
+Quando a Focus retorna caminhos para XML/DANFC-e, o processador tenta copiar os arquivos para o bucket privado `fiscal-documents`.
 
 Estrutura:
 
