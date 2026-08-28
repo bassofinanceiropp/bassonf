@@ -11,8 +11,9 @@ export async function GET(request: Request) {
     const path = url.searchParams.get("path");
     if (!path || path.includes("..") || !path.startsWith(`${env.companySlug}/`)) return NextResponse.json({ error: "Caminho inválido." }, { status: 400 });
     const bytes = await downloadStored(path);
+    const body = Uint8Array.from(bytes).buffer;
     const isPdf = path.toLowerCase().endsWith(".pdf");
-    return new NextResponse(bytes, {
+    return new NextResponse(body, {
       headers: {
         "Content-Type": isPdf ? "application/pdf" : "application/xml",
         "Content-Disposition": `attachment; filename="${path.split("/").pop()}"`,

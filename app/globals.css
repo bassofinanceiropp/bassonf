@@ -87,7 +87,7 @@ tr:hover td { background:rgba(255,255,255,.018); }
 .muted { color:var(--muted); }
 .right { text-align:right; }
 .kpi-line { display:flex; align-items:flex-end; justify-content:space-between; gap:10px; }
-.mini-chart { height:130px; display:flex; gap:8px; align-items:end; padding-top:12px; }
+.mini-chart { height:130px; display:flex; gap:8px; align-items:flex-end; padding-top:12px; }
 .mini-bar { flex:1; min-width:12px; border-radius:5px 5px 2px 2px; background:linear-gradient(180deg,#d8bc7a,#6f562b); opacity:.9; }
 .day-card { padding:16px; display:grid; grid-template-columns:1.2fr repeat(4,.7fr) auto; gap:14px; align-items:center; border-bottom:1px solid var(--line); }
 .day-card:last-child { border-bottom:0; }

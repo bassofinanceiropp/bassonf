@@ -36,8 +36,9 @@ export async function GET(request: Request) {
     }
 
     const bytes = await zip.generateAsync({ type: "uint8array", compression: "DEFLATE" });
+    const body = Uint8Array.from(bytes).buffer;
     const name = `Basso-Fiscal-${start}-a-${end}.zip`;
-    return new NextResponse(bytes, { headers: { "Content-Type": "application/zip", "Content-Disposition": `attachment; filename="${name}"`, "Cache-Control": "private, no-store" } });
+    return new NextResponse(body, { headers: { "Content-Type": "application/zip", "Content-Disposition": `attachment; filename="${name}"`, "Cache-Control": "private, no-store" } });
   } catch (e: any) {
     return NextResponse.json({ error: e.message || "Erro ao gerar pacote" }, { status: e.message === "UNAUTHORIZED" ? 401 : 500 });
   }
