@@ -4,8 +4,6 @@ export const env = {
   sessionSecret: process.env.APP_SESSION_SECRET || "dev-session-secret-change-me",
   adminEmail: process.env.APP_ADMIN_EMAIL || "admin@basso.local",
   adminPassword: process.env.APP_ADMIN_PASSWORD || "admin123",
-  workerSecret: process.env.WORKER_SECRET || "dev-worker-secret",
-  cronSecret: process.env.CRON_SECRET || "dev-cron-secret",
   supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL || "",
   supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY || "",
   storageBucket: process.env.SUPABASE_STORAGE_BUCKET || "fiscal-documents",

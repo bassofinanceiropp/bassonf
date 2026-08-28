@@ -3,7 +3,7 @@
 - [ ] Criar Supabase exclusivo do Basso Fiscal.
 - [ ] Executar `sql/001_schema.sql` somente nesse Supabase.
 - [ ] Criar credenciais administrativas fortes.
-- [ ] Configurar `APP_SESSION_SECRET`, `WORKER_SECRET` e `CRON_SECRET` diferentes.
+- [ ] Configurar `APP_SESSION_SECRET` forte no Vercel.
 - [ ] Criar endpoint read-only de pedidos no sistema principal da Basso.
 - [ ] Configurar `BASSO_ORDERS_API_URL` e `BASSO_ORDERS_API_KEY`.
 - [ ] Cadastrar produtos e perfis fiscais com dados fornecidos pelo contador.

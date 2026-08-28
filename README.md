@@ -156,24 +156,21 @@ Veja `docs/FOCUS_INTEGRATION.md`.
 
 A data usada no filtro é a **data do pedido**. O sistema não falsifica data anterior de autorização fiscal.
 
-## Worker
+## Processamento da fila no Vercel Hobby
 
-Endpoint manual:
+Este projeto não usa Vercel Cron e não precisa de `CRON_SECRET` ou `WORKER_SECRET`.
+
+Quando um lote é criado pela tela **Emitir NFC-e**, o navegador autenticado chama:
 
 ```text
 POST /api/internal/fiscal-worker
-x-worker-secret: <WORKER_SECRET>
 ```
 
-Ele processa até 20 itens por execução.
+A rota exige a sessão administrativa e processa até 10 itens por chamada. A interface repete chamadas curtas até esvaziar o lote, evitando uma única função longa.
 
-Também existe `vercel.json` com chamada a cada 5 minutos. Para cron, configure `CRON_SECRET`; o endpoint GET exige:
+Se a aba for fechada durante o processamento, o lote permanece salvo. Acesse **Lotes de emissão** e use **Processar pendentes** para continuar.
 
-```text
-Authorization: Bearer <CRON_SECRET>
-```
-
-Se o plano/infraestrutura escolhida não suportar essa frequência, remova `vercel.json` e acione o worker por outro agendador seguro. O núcleo fiscal não depende da Vercel especificamente.
+Isso mantém o módulo compatível com o Vercel Hobby sem agendador automático.
 
 ## Falhas e retentativas
 
@@ -230,7 +227,7 @@ FOCUS_NFE_ENV=producao
 - sem token Focus no frontend;
 - sem Service Role no frontend;
 - cookie de sessão HTTP-only;
-- segredos separados para sessão, worker e cron;
+- segredo de sessão mantido somente no backend;
 - bucket fiscal privado;
 - RLS habilitado sem policies públicas;
 - API da Basso deve ser read-only;

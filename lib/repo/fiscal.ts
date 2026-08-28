@@ -143,14 +143,16 @@ export async function recoverStaleBatchItems(minutes = 10) {
   return data?.length || 0;
 }
 
-export async function getQueuedBatchItems(limit = 20) {
+export async function getQueuedBatchItems(limit = 10, batchId?: string) {
   if (env.demoMode) return [];
   const db = adminSupabase();
-  const { data, error } = await db.from("fiscal_batch_items")
+  let query = db.from("fiscal_batch_items")
     .select("id,batch_id,external_order_id,status,attempts")
     .eq("status", "queued")
     .order("created_at", { ascending: true })
     .limit(limit);
+  if (batchId) query = query.eq("batch_id", batchId);
+  const { data, error } = await query;
   if (error) throw error;
   return data || [];
 }

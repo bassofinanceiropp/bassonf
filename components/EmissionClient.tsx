@@ -57,11 +57,22 @@ export function EmissionClient({ initialStart, initialEnd }: { initialStart: str
         const emittedIds = new Set(payloadOrders.map(o=>o.id));
         setOrders(current=>current.map(o=>emittedIds.has(o.id)?{...o,fiscalStatus:"authorized"}:o));
         setSelected([]);
+        setMessage(`Lote ${data.batch.id} criado. ${payloadOrders.length} emissão(ões) simulada(s) com sucesso.`);
       } else {
         setSelected([]);
+        let processedTotal=0;
+        for(let i=0;i<60;i++){
+          setMessage(`Lote ${data.batch.id} criado. Processando emissões... ${processedTotal}/${payloadOrders.length}`);
+          const workerRes=await fetch("/api/internal/fiscal-worker",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({batchId:data.batch.id})});
+          const workerData=await workerRes.json();
+          if(!workerRes.ok) throw new Error(workerData.error||"Falha ao processar fila fiscal");
+          const processed=Number(workerData.processed||0);
+          processedTotal+=processed;
+          if(processed===0) break;
+        }
         await search();
+        setMessage(`Lote ${data.batch.id} processado. ${processedTotal} item(ns) tratado(s). Se algum item ficar pendente, use Lotes → Processar pendentes.`);
       }
-      setMessage(`Lote ${data.batch.id} criado. ${data.demo ? `${payloadOrders.length} emissão(ões) simulada(s) com sucesso.` : `${payloadOrders.length} pedido(s) entrou(aram) na fila fiscal.`}`);
     }catch(e:any){setMessage(e.message||"Erro inesperado");} finally{setLoading(false);}
   }
 

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { requireSession } from "@/lib/auth/session";
 import { env } from "@/lib/env";
 import { emitNfce } from "@/lib/focus/provider";
 import { archiveFocusArtifacts } from "@/lib/storage";
@@ -16,11 +17,11 @@ import {
   recoverStaleBatchItems,
 } from "@/lib/repo/fiscal";
 
-async function runWorker() {
+async function runWorker(batchId?: string) {
   if (env.demoMode) return { demo: true, processed: 0, message: "Worker desabilitado no modo demonstração." };
   const profiles = await getProfiles();
   await recoverStaleBatchItems(10);
-  const items = await getQueuedBatchItems(20);
+  const items = await getQueuedBatchItems(10, batchId);
   const touched = new Set<string>();
   const results: any[] = [];
 
@@ -56,18 +57,18 @@ async function runWorker() {
     }
   }
 
-  for (const batchId of touched) await refreshBatch(batchId);
-  return { processed: results.length, results };
+  for (const id of touched) await refreshBatch(id);
+  return { processed: results.length, results, batchId: batchId || null };
 }
 
 export async function POST(request: Request) {
-  const secret = request.headers.get("x-worker-secret") || new URL(request.url).searchParams.get("secret");
-  if (!secret || secret !== env.workerSecret) return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
-  return NextResponse.json(await runWorker());
-}
-
-export async function GET(request: Request) {
-  const auth = request.headers.get("authorization");
-  if (!env.cronSecret || auth !== `Bearer ${env.cronSecret}`) return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
-  return NextResponse.json(await runWorker());
+  try {
+    await requireSession();
+    const body = await request.json().catch(() => ({}));
+    const batchId = typeof body?.batchId === "string" && body.batchId ? body.batchId : undefined;
+    return NextResponse.json(await runWorker(batchId));
+  } catch (error: any) {
+    const unauthorized = error?.message === "UNAUTHORIZED";
+    return NextResponse.json({ error: unauthorized ? "Não autorizado" : (error?.message || "Falha ao processar fila fiscal") }, { status: unauthorized ? 401 : 500 });
+  }
 }
